@@ -41,15 +41,6 @@ public class OverScrollView extends ScrollView {
         parentScrollView = mContentView;
     }
 
-    private int getScrollRange() {
-        int scrollRange = 0;
-        if (getChildCount() > 0) {
-            View child = getChildAt(0);
-            scrollRange = Math.max(0, child.getHeight() - (getHeight()));
-        }
-        return scrollRange;
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (parentScrollView == null) {
@@ -86,9 +77,6 @@ public class OverScrollView extends ScrollView {
         View child = getChildAt(0);
         if (parentScrollView != null) {
             if (ev.getAction() == MotionEvent.ACTION_MOVE) {
-                int height = child.getMeasuredHeight();
-                height = height - getMeasuredHeight();// System.out.println("height=" + height);
-                int scrollY = getScrollY();// System.out.println("scrollY" + scrollY);
                 int y = (int)ev.getY();// 手指向下滑动
                 if (currentY < y) {
                     if (isTriggerDownEvent()) {// 如果向下触发事件，就把滚动交给父Scrollview
@@ -97,8 +85,8 @@ public class OverScrollView extends ScrollView {
                     } else {
                         setParentScrollAble(false);
                     }
-                } else if (isTriggerUpEvent()) {
-                    if (scrollY >= height) {// 如果向上触发事件，就把滚动交给父Scrollview
+                } else if (currentY > y) {
+                    if (isTriggerUpEvent()) {// 如果向上触发事件，就把滚动交给父Scrollview
                         setParentScrollAble(true);
                         return false;
                     } else {
